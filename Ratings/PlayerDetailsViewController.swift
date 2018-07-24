@@ -30,48 +30,64 @@
 
 import UIKit
 
-class PlayersViewController: UITableViewController {
+class PlayerDetailsViewController: UITableViewController {
   
   // MARK: - Properties
-  var players = SampleData.generatePlayersData()
+  var player: Player?
+  
+  var game: String = "Chess" {
+    didSet {
+      detailLabel.text = game
+    }
+  }
+  
+  @IBOutlet weak var nameTextField: UITextField!
+  @IBOutlet weak var detailLabel: UILabel!
+  
+  // MARK: - Initializers
+  required init?(coder aDecoder: NSCoder) {
+    print("init PlayerDetailsViewController")
+    super.init(coder: aDecoder)
+  }
+  
+  deinit {
+    print("deinit PlayerDetailsViewController")
+  }
+  
+  // MARK: - Navigation
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?)  {
+    
+    if segue.identifier == "SavePlayerDetail",
+      let playerName = nameTextField.text {
+      player = Player(name: playerName, game: "Chess", rating: 1)
+    }
+    
+    if segue.identifier == "PickGame",
+      let gamePickerViewController = segue.destination as? GamePickerViewController {
+      gamePickerViewController.selectedGame = game
+    }
+  }
 }
 
 // MARK: - IBActions
-extension PlayersViewController {
+extension PlayerDetailsViewController {
   
-  @IBAction func cancelToPlayersViewController(_ segue: UIStoryboardSegue) {
-  }
-  
-  @IBAction func savePlayerDetail(_ segue: UIStoryboardSegue) {
-    
-    guard let playerDetailsViewController = segue.source as? PlayerDetailsViewController,
-      let player = playerDetailsViewController.player else {
-        return
+  @IBAction func unwindWithSelectedGame(segue: UIStoryboardSegue) {
+    if let gamePickerViewController = segue.source as? GamePickerViewController,
+      let selectedGame = gamePickerViewController.selectedGame {
+      game = selectedGame
     }
-    
-    // add the new player to the players array
-    players.append(player)
-    
-    // update the tableView
-    let indexPath = IndexPath(row: players.count - 1, section: 0)
-    tableView.insertRows(at: [indexPath], with: .automatic) 
   }
 }
 
-// MARK: - UITableViewDataSource
-extension PlayersViewController {
+// MARK: - UITableViewDelegate
+extension PlayerDetailsViewController {
   
-  override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return players.count
-  }
-  
-  override func tableView(_ tableView: UITableView,
-                          cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: "PlayerCell",
-                                             for: indexPath) as! PlayerCell
-    
-    let player = players[indexPath.row]
-    cell.player = player
-    return cell
+  override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    if indexPath.section == 0 {
+      nameTextField.becomeFirstResponder()
+    }
   }
 }
+
+
