@@ -9,3 +9,4 @@ Storyboards are an exciting feature first introduced in iOS 5 that save time bui
 Source:
 
 - [Storyboards Tutorial for iOS: Part 1](https://www.raywenderlich.com/160521/storyboards-tutorial-ios-11-part-1)
+- [Storyboards Tutorial for iOS: Part 2](https://www.raywenderlich.com/160519/storyboards-tutorial-ios-10-getting-started-part-2)
